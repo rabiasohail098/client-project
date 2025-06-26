@@ -3,8 +3,12 @@
 import streamlit as st
 import pandas as pd
 from database import Customer
+from utils.session import initialize_session
+initialize_session()
 
 db = st.session_state['db']
+
+
 
 def manage_customers():
     st.title("Customer Management")

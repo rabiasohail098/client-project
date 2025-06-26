@@ -8,8 +8,12 @@ from sqlalchemy.orm import joinedload
 from fpdf import FPDF
 from io import BytesIO
 from database import Customer, Item, Order, OrderItem, Transaction
+from utils.session import initialize_session
+initialize_session()
 
 db = st.session_state['db']
+
+
 
 # Helper function for creating sales PDF
 def create_pdf(data_frame, total_rev, total_prof, start, end):

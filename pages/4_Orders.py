@@ -5,8 +5,12 @@ import pandas as pd
 from datetime import datetime
 from sqlalchemy.orm import joinedload
 from database import Customer, Item, Order, OrderItem, Transaction
+from utils.session import initialize_session
+initialize_session()
 
 db = st.session_state['db']
+
+
 
 def manage_orders():
     st.title("Order Management")

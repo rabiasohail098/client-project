@@ -6,8 +6,12 @@ from datetime import datetime
 from fpdf import FPDF
 from io import BytesIO
 from database import Item, Transaction
+from utils.session import initialize_session
+initialize_session()
 
 db = st.session_state['db']
+
+
 
 # Helper function for creating transaction summary PDF 
 def create_transaction_pdf(data_frame, start, end):

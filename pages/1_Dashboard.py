@@ -6,9 +6,12 @@ from datetime import datetime
 from sqlalchemy import func, cast, String as AlchemyString
 from sqlalchemy.orm import joinedload
 from database import Customer, Item, Order, OrderItem, Transaction
+from utils.session import initialize_session
+initialize_session()
 
-# Get database instance from session state
 db = st.session_state['db']
+
+
 
 def show_dashboard():
     st.title("Inventory Dashboard")
