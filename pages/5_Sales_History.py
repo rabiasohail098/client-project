@@ -26,7 +26,7 @@ def create_pdf(data_frame, total_rev, total_prof, start, end):
         pdf.ln(10)
 
         # Column widths
-        col_widths = [15, 15, 20, 20, 20, 25, 12, 16, 16, 15, 15] 
+        col_widths = [12, 12, 15, 25, 25, 25, 8, 16, 16, 15, 15] 
         headers = ["Bill No", "Order ID", "Date", "Customer Name", "Customer Phone", "Product Name", "Qty", "Item Total", "Order Total", "Paid", "Balance"]
 
         # Header
