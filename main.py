@@ -49,12 +49,26 @@ def check_password(password, hashed_password):
 def login_page():
     st.title("Inventory Management System - Login/Signup")
 
+    # Initialize tab selection state (for login/signup tabs)
+    if 'current_login_tab' not in st.session_state:
+        st.session_state.current_login_tab = "Login"
+
     login_tab, signup_tab = st.tabs(["Login", "Sign Up"])
+
+    # Update tab selection based on which tab is clicked
+    # This is a bit tricky with st.tabs, they don't directly update session_state.
+    # We can rely on which form submits.
 
     with login_tab:
         st.subheader("Login to your account")
-        username = st.text_input("Username", key="login_username")
-        password = st.text_input("Password", type="password", key="login_password")
+        # Initialize input values for login form
+        if 'login_username_value' not in st.session_state:
+            st.session_state.login_username_value = ""
+        if 'login_password_value' not in st.session_state:
+            st.session_state.login_password_value = ""
+
+        username = st.text_input("Username", value=st.session_state.login_username_value, key="login_username")
+        password = st.text_input("Password", type="password", value=st.session_state.login_password_value, key="login_password")
 
         if st.button("Login", key="login_button"):
             session = db.get_session()
@@ -65,16 +79,30 @@ def login_page():
                 st.session_state.logged_in = True
                 st.session_state.current_user = username
                 st.success("Logged in successfully!")
-                # Streamlit automatically redirects to default page after login
+                # Clear login form fields after successful login
+                st.session_state.login_username_value = ""
+                st.session_state.login_password_value = ""
                 st.rerun() 
             else:
                 st.error("Invalid username or password")
+            # Update values in session state for non-submitting inputs (if any)
+            st.session_state.login_username_value = username
+            st.session_state.login_password_value = password
+
 
     with signup_tab:
         st.subheader("Create a new account")
-        new_username = st.text_input("New Username", key="signup_username")
-        new_password = st.text_input("New Password", type="password", key="new_password")
-        confirm_password = st.text_input("Confirm Password", type="password", key="confirm_password")
+        # Initialize input values for signup form
+        if 'signup_username_value' not in st.session_state:
+            st.session_state.signup_username_value = ""
+        if 'new_password_value' not in st.session_state:
+            st.session_state.new_password_value = ""
+        if 'confirm_password_value' not in st.session_state:
+            st.session_state.confirm_password_value = ""
+
+        new_username = st.text_input("New Username", value=st.session_state.signup_username_value, key="signup_username")
+        new_password = st.text_input("New Password", type="password", value=st.session_state.new_password_value, key="new_password")
+        confirm_password = st.text_input("Confirm Password", type="password", value=st.session_state.confirm_password_value, key="confirm_password")
 
         if st.button("Sign Up", key="signup_button"):
             if not new_username or not new_password or not confirm_password:
@@ -96,8 +124,16 @@ def login_page():
                     session.commit()
                     st.success("Account created successfully! You can now log in.")
                     session.close()
-                    # No need to change current_page, just show success and rerun
+                    # Clear signup form fields after successful signup
+                    st.session_state.signup_username_value = ""
+                    st.session_state.new_password_value = ""
+                    st.session_state.confirm_password_value = ""
                     st.rerun()
+            # Update values in session state for non-submitting inputs
+            st.session_state.signup_username_value = new_username
+            st.session_state.new_password_value = new_password
+            st.session_state.confirm_password_value = confirm_password
+
 
 # Main app flow
 if not st.session_state.logged_in:
@@ -110,6 +146,11 @@ else:
         st.session_state.logged_in = False
         st.session_state.current_user = None
         # Clear any page-specific session state if necessary upon logout
-        if 'current_order_items' in st.session_state:
-            del st.session_state.current_order_items
+        # This is a good place to clean up, for example if you had a shopping cart
+        # st.session_state.current_order_items is an example, you might have others
+        keys_to_clear = [key for key in st.session_state.keys() if key.startswith(('add_item_', 'edit_item_', 'select_product_', 'add_cust_', 'edit_cust_', 'select_customer_'))]
+        for key in keys_to_clear:
+            if key in st.session_state:
+                del st.session_state[key]
+        
         st.rerun()
