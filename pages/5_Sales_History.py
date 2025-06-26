@@ -51,11 +51,7 @@ def create_pdf(data_frame, total_rev, total_prof, start, end):
             pdf.cell(col_widths[10], 8, row["Balance Amount"].replace("PKR ", ""), 1, 0, 'C')
             pdf.ln()
 
-        # Summary
-        pdf.ln(10)
-        pdf.set_font("Arial", 'B', 12)
-        pdf.cell(0, 10, f"Total Revenue: PKR {total_rev:.2f}", 0, 1, 'R')
-        pdf.cell(0, 10, f"Total Profit: PKR {total_prof:.2f}", 0, 1, 'R')
+       
 
         buffer = BytesIO()
         buffer.write(pdf.output(dest='B')) 
